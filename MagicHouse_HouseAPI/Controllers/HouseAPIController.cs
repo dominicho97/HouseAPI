@@ -11,6 +11,7 @@ namespace MagicHouse_HouseAPI.Controllers
     {
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<HouseDTO>>GetHouses()
         {
             return Ok( HouseStore.houseList);
@@ -20,7 +21,9 @@ namespace MagicHouse_HouseAPI.Controllers
 
 
         [HttpGet("{id:int}")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<HouseDTO> GetHouse(int id)
         {
             if(id == 0)
