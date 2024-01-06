@@ -1,4 +1,5 @@
-﻿using MagicHouse_HouseAPI.Models;
+﻿using MagicHouse_HouseAPI.Data;
+using MagicHouse_HouseAPI.Models;
 using MagicHouse_HouseAPI.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,8 @@ namespace MagicHouse_HouseAPI.Controllers
         [HttpGet]
         public IEnumerable<HouseDTO>GetHouses()
         {
-            return new List<HouseDTO>
-            {
-                new HouseDTO { Id = 1,Name="Pool View"},
-                new HouseDTO { Id = 2,Name="Beach View"}
-            };
+            return HouseStore.houseList;
+         
 
         }
     }
