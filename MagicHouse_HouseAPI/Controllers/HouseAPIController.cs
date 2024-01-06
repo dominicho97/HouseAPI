@@ -17,5 +17,15 @@ namespace MagicHouse_HouseAPI.Controllers
          
 
         }
+
+
+        [HttpGet("{id:int}")]
+
+        public HouseDTO GetHouse(int id)
+        {
+            return HouseStore.houseList.FirstOrDefault(u => u.Id == id);
+
+
+        }
     }
 }
