@@ -1,6 +1,7 @@
 ﻿using MagicHouse_HouseAPI.Data;
 using MagicHouse_HouseAPI.Models;
 using MagicHouse_HouseAPI.Models.DTO;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicHouse_HouseAPI.Controllers
@@ -39,6 +40,26 @@ namespace MagicHouse_HouseAPI.Controllers
             return Ok(house);
 
 
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<HouseDTO>CreateHouse(HouseDTO houseDTO) 
+        {
+            if (houseDTO == null)
+            {
+                return BadRequest(houseDTO);
+            }
+            if (houseDTO.Id > 0) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            houseDTO.Id = HouseStore.houseList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
+            HouseStore.houseList.Add(houseDTO);
+
+            return Ok(houseDTO);
         }
     }
 }
