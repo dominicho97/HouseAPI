@@ -11,9 +11,9 @@ namespace MagicHouse_HouseAPI.Controllers
     {
 
         [HttpGet]
-        public IEnumerable<HouseDTO>GetHouses()
+        public ActionResult<IEnumerable<HouseDTO>>GetHouses()
         {
-            return HouseStore.houseList;
+            return Ok( HouseStore.houseList);
          
 
         }
@@ -21,9 +21,19 @@ namespace MagicHouse_HouseAPI.Controllers
 
         [HttpGet("{id:int}")]
 
-        public HouseDTO GetHouse(int id)
+        public ActionResult<HouseDTO> GetHouse(int id)
         {
-            return HouseStore.houseList.FirstOrDefault(u => u.Id == id);
+            if(id == 0)
+            {
+                return BadRequest(); 
+            }
+            var house = HouseStore.houseList.FirstOrDefault(u => u.Id == id);
+            if(house == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(house);
 
 
         }
