@@ -21,7 +21,7 @@ namespace MagicHouse_HouseAPI.Controllers
         }
 
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name ="GetHouse")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -43,7 +43,7 @@ namespace MagicHouse_HouseAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<HouseDTO>CreateHouse(HouseDTO houseDTO) 
@@ -59,7 +59,7 @@ namespace MagicHouse_HouseAPI.Controllers
             houseDTO.Id = HouseStore.houseList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
             HouseStore.houseList.Add(houseDTO);
 
-            return Ok(houseDTO);
+            return CreatedAtRoute("GetHouse",new {id = houseDTO.Id}, houseDTO);
         }
     }
 }
