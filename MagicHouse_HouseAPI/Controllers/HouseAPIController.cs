@@ -13,11 +13,18 @@ namespace MagicHouse_HouseAPI.Controllers
     [ApiController]
     public class HouseAPIController : ControllerBase
     {
+        private readonly ILogger<HouseAPIController> _logger;
+
+        public HouseAPIController(ILogger<HouseAPIController>logger)
+        {
+            _logger = logger;
+        }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<HouseDTO>> GetHouses()
         {
+            _logger.LogInformation("Getting all houses");
             return Ok(HouseStore.houseList);
 
 
@@ -32,6 +39,7 @@ namespace MagicHouse_HouseAPI.Controllers
         {
             if (id == 0)
             {
+                _logger.LogInformation("Get house error with Id" + id);
                 return BadRequest();
             }
             var house = HouseStore.houseList.FirstOrDefault(u => u.Id == id);
