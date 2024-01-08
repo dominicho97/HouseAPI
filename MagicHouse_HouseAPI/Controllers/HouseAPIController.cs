@@ -3,6 +3,7 @@ using MagicHouse_HouseAPI.Models;
 using MagicHouse_HouseAPI.Models.DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MagicHouse_HouseAPI.Controllers
 {
@@ -46,8 +47,18 @@ namespace MagicHouse_HouseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<HouseDTO>CreateHouse(HouseDTO houseDTO) 
-        {
+        public ActionResult<HouseDTO>CreateHouse([FromBody]HouseDTO houseDTO) 
+        {   
+            //if(!ModelState.IsValid) 
+            //{
+            //    return BadRequest(ModelState);
+            //}
+
+            if(HouseStore.houseList.FirstOrDefault(u=>u.Name.ToLower()==houseDTO.Name.ToLower()) != null)
+            {
+                ModelState.AddModelError("CustomError", "House already exists!");
+                return BadRequest(ModelState);
+            }
             if (houseDTO == null)
             {
                 return BadRequest(houseDTO);
