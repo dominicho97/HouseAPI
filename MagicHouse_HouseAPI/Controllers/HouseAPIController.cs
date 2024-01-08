@@ -2,6 +2,7 @@
 using MagicHouse_HouseAPI.Models;
 using MagicHouse_HouseAPI.Models.DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -113,8 +114,32 @@ namespace MagicHouse_HouseAPI.Controllers
 
             return NoContent();
         }
-       
-    
+
+
+
+        [HttpPatch("{id:int}", Name = "UpdatePartialHouse")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public IActionResult UpdatePartialHouse(int id,JsonPatchDocument<HouseDTO>patchDTO)
+        {
+            if(patchDTO == null || id == 0)
+            {
+                return BadRequest();
+            }
+            var house = HouseStore.houseList.FirstOrDefault(u => u.Id == id);
+            if(house == null)
+            {
+                return BadRequest();
+            }
+            patchDTO.ApplyTo(house, ModelState);
+            if(!ModelState.IsValid) 
+            {
+                return BadRequest();
+
+            }
+            return NoContent();
+        }
 
     }
 
