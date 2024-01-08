@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MagicHouse_HouseAPI.Controllers
 {
+    //localhost:7027/api/houseapi
     [Route("api/HouseAPI")]
     [ApiController]
     public class HouseAPIController : ControllerBase
