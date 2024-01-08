@@ -72,5 +72,31 @@ namespace MagicHouse_HouseAPI.Controllers
 
             return CreatedAtRoute("GetHouse",new {id = houseDTO.Id}, houseDTO);
         }
+
+
+        [HttpDelete("{id:int}", Name = "DeleteHouse")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public IActionResult DeleteHouse(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+            var house = HouseStore.houseList.FirstOrDefault(u=>u.Id == id);
+            if (house == null)
+            {
+                return NotFound();
+            }
+            HouseStore.houseList.Remove(house);
+            return NoContent();
+        }
+
+
     }
+
+
+
 }
