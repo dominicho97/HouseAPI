@@ -1,4 +1,5 @@
-﻿using MagicHouse_HouseAPI.Data;
+﻿using AutoMapper;
+using MagicHouse_HouseAPI.Data;
 
 using MagicHouse_HouseAPI.Models;
 using MagicHouse_HouseAPI.Models.DTO;
@@ -16,18 +17,21 @@ namespace MagicHouse_HouseAPI.Controllers
     public class HouseAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
+        private readonly IMapper _mapper;
 
-        public HouseAPIController(ApplicationDbContext db)
+        public HouseAPIController(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<HouseDTO>>> GetHouses()
         {
-            
-            return Ok(await _db.Houses.ToListAsync());
+
+            IEnumerable<House>houseList = await _db.Houses.ToListAsync();
+            return Ok(_mapper.Map<List<HouseDTO>>(houseList));
 
 
         }
@@ -49,7 +53,7 @@ namespace MagicHouse_HouseAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(house);
+            return Ok(_mapper.Map<HouseDTO>(house));
 
 
         }
@@ -58,37 +62,40 @@ namespace MagicHouse_HouseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<HouseDTO>> CreateHouse([FromBody] HouseCreateDTO houseDTO)
+        public async Task<ActionResult<HouseDTO>> CreateHouse([FromBody] HouseCreateDTO createDTO)
         {
             //if(!ModelState.IsValid) 
             //{
             //    return BadRequest(ModelState);
             //}
 
-            if (await _db.Houses.FirstOrDefaultAsync(u => u.Name.ToLower() == houseDTO.Name.ToLower()) != null)
+            if (await _db.Houses.FirstOrDefaultAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
             {
                 ModelState.AddModelError("CustomError", "House already exists!");
                 return BadRequest(ModelState);
             }
-            if (houseDTO == null)
+            if (createDTO == null)
             {
-                return BadRequest(houseDTO);
+                return BadRequest(createDTO);
             }
             //if (houseDTO.Id > 0)
             //{
             //    return StatusCode(StatusCodes.Status500InternalServerError);
             //}
-            House model = new House()
-            {
-                Amenity = houseDTO.Amenity,
-                Details = houseDTO.Details,
+
+            House model = _mapper.Map<House>(createDTO);
+
+            //House model = new House()
+            //{
+            //    Amenity = createDTO.Amenity,
+            //    Details = createDTO.Details,
             
-                ImageUrl = houseDTO.ImageUrl,
-                Name = houseDTO.Name,
-                Occupancy = houseDTO.Occupancy,
-                Rate = houseDTO.Rate,
-                Sqft = houseDTO.Sqft,
-            };
+            //    ImageUrl = createDTO.ImageUrl,
+            //    Name = createDTO.Name,
+            //    Occupancy = createDTO.Occupancy,
+            //    Rate = createDTO.Rate,
+            //    Sqft = createDTO.Sqft,
+            //};
             await _db.Houses.AddAsync(model);
             await _db.SaveChangesAsync();
 
@@ -123,35 +130,20 @@ namespace MagicHouse_HouseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         
 
-        public async Task<IActionResult> UpdateHouse(int id, [FromBody] HouseUpdateDTO houseDTO)
+        public async Task<IActionResult> UpdateHouse(int id, [FromBody] HouseUpdateDTO updateDTO)
         {
-            if (houseDTO == null || id != houseDTO.Id)
+            if (updateDTO == null || id != updateDTO.Id)
             {
                 return BadRequest();
             }
-            /*     var house = _db.Houses.FirstOrDefault(u => u.Id == id);
-                 house.Name = houseDTO.Name;
-                 house.Sqft = houseDTO.Sqft;
-                 house.Occupancy = houseDTO.Occupancy;*/
 
-            House model = new House()
-            {
-                Amenity = houseDTO.Amenity,
-                Details = houseDTO.Details,
-                Id = houseDTO.Id,
-                ImageUrl = houseDTO.ImageUrl,
-                Name = houseDTO.Name,
-                Occupancy = houseDTO.Occupancy,
-                Rate = houseDTO.Rate,
-                Sqft = houseDTO.Sqft,
-            };
+            House model = _mapper.Map<House>(updateDTO);
+
              _db.Houses.Update(model);
             await _db.SaveChangesAsync();
 
             return NoContent();
         }
-
-
 
         [HttpPatch("{id:int}", Name = "UpdatePartialHouse")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -165,34 +157,26 @@ namespace MagicHouse_HouseAPI.Controllers
             }
             var house = await _db.Houses.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
 
+            HouseUpdateDTO houseDTO = _mapper.Map<HouseUpdateDTO>(house);
 
-            HouseUpdateDTO houseDTO = new ()
-            {
-                Amenity = house.Amenity,
-                Details = house.Details,
-                Id = house.Id,
-                ImageUrl = house.ImageUrl,
-                Name = house.Name,
-                Occupancy = house.Occupancy,
-                Rate = house.Rate,
-                Sqft = house.Sqft,
-            };
+            //HouseUpdateDTO houseDTO = new ()
+            //{
+            //    Amenity = house.Amenity,
+            //    Details = house.Details,
+            //    Id = house.Id,
+            //    ImageUrl = house.ImageUrl,
+            //    Name = house.Name,
+            //    Occupancy = house.Occupancy,
+            //    Rate = house.Rate,
+            //    Sqft = house.Sqft,
+            //};
             if (house == null)
             {
                 return BadRequest();
             }
             patchDTO.ApplyTo(houseDTO, ModelState);
-            House model = new House()
-            {
-                Amenity = houseDTO.Amenity,
-                Details = houseDTO.Details,
-                Id = houseDTO.Id,
-                ImageUrl = houseDTO.ImageUrl,
-                Name = houseDTO.Name,
-                Occupancy = houseDTO.Occupancy,
-                Rate = houseDTO.Rate,
-                Sqft = houseDTO.Sqft,
-            };
+            House model = _mapper.Map<House>(houseDTO);
+  
             _db.Houses.Update(model);
             await _db.SaveChangesAsync();
             if (!ModelState.IsValid) 
