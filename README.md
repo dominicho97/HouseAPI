@@ -6,6 +6,7 @@ The purpose of this project is to make a complete API using concepts such as:
 - Depency Injection
 -  Automapper
 -  Validation
+-  Repository 
 -  Versioning...
 
 
