@@ -1,5 +1,6 @@
 # House API
-ASP.NET Core Web API about houses
+ASP.NET Core Web API about houses.
+
 
 ## GET, POST, DELET, PUT & Patch requests
 All requests available with **Swagger** documentation and error handling.
