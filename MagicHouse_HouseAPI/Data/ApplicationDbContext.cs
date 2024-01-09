@@ -11,7 +11,7 @@ namespace MagicHouse_HouseAPI.Data
         {
 
         }
-        public DbSet<House> houses {  get; set; }
+        public DbSet<House> Houses {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
