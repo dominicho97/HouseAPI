@@ -58,7 +58,7 @@ namespace MagicHouse_HouseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<HouseDTO> CreateHouse([FromBody] HouseDTO houseDTO)
+        public ActionResult<HouseDTO> CreateHouse([FromBody] HouseCreateDTO houseDTO)
         {
             //if(!ModelState.IsValid) 
             //{
@@ -74,15 +74,15 @@ namespace MagicHouse_HouseAPI.Controllers
             {
                 return BadRequest(houseDTO);
             }
-            if (houseDTO.Id > 0)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            //if (houseDTO.Id > 0)
+            //{
+            //    return StatusCode(StatusCodes.Status500InternalServerError);
+            //}
             House model = new House()
             {
                 Amenity = houseDTO.Amenity,
                 Details = houseDTO.Details,
-                Id = houseDTO.Id,
+            
                 ImageUrl = houseDTO.ImageUrl,
                 Name = houseDTO.Name,
                 Occupancy = houseDTO.Occupancy,
@@ -92,7 +92,7 @@ namespace MagicHouse_HouseAPI.Controllers
             _db.Houses.Add(model);
             _db.SaveChanges();
 
-            return CreatedAtRoute("GetHouse", new { id = houseDTO.Id }, houseDTO);
+            return CreatedAtRoute("GetHouse", new { id = model.Id }, model);
         }
 
 
@@ -123,7 +123,7 @@ namespace MagicHouse_HouseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         
 
-        public IActionResult UpdateHouse(int id, [FromBody] HouseDTO houseDTO)
+        public IActionResult UpdateHouse(int id, [FromBody] HouseUpdateDTO houseDTO)
         {
             if (houseDTO == null || id != houseDTO.Id)
             {
@@ -157,7 +157,7 @@ namespace MagicHouse_HouseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public IActionResult UpdatePartialHouse(int id,JsonPatchDocument<HouseDTO>patchDTO)
+        public IActionResult UpdatePartialHouse(int id,JsonPatchDocument<HouseUpdateDTO>patchDTO)
         {
             if(patchDTO == null || id == 0)
             {
@@ -166,7 +166,7 @@ namespace MagicHouse_HouseAPI.Controllers
             var house = _db.Houses.AsNoTracking().FirstOrDefault(u => u.Id == id);
 
 
-            HouseDTO houseDTO = new HouseDTO()
+            HouseUpdateDTO houseDTO = new ()
             {
                 Amenity = house.Amenity,
                 Details = house.Details,
