@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace MagicHouse_HouseAPI.Controllers
 {
@@ -162,7 +163,9 @@ namespace MagicHouse_HouseAPI.Controllers
             {
                 return BadRequest();
             }
-            var house = _db.Houses.FirstOrDefault(u => u.Id == id);
+            var house = _db.Houses.AsNoTracking().FirstOrDefault(u => u.Id == id);
+
+
             HouseDTO houseDTO = new HouseDTO()
             {
                 Amenity = house.Amenity,
