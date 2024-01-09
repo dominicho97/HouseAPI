@@ -1,5 +1,12 @@
 # House API
 ASP.NET Core Web API about houses.
+The purpose of this project is to make a complete API using concepts such as:
+- DTO
+- EF Core
+- Depency Injection
+-  Automapper
+-  Validation
+-  Versioning...
 
 
 ## GET, POST, DELET, PUT & Patch requests
