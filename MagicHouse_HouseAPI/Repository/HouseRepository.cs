@@ -15,13 +15,13 @@ namespace MagicHouse_HouseAPI.Repository
         {
             _db = db;
         }
-        public async Task Create(House entity)
+        public async Task CreateAsync(House entity)
         {
             await _db.Houses.AddAsync(entity);
-            await Save();
+            await SaveAsync();
         }
 
-        public async Task<House> Get(Expression<Func<House, bool>> filter = null, bool tracked = true)
+        public async Task<House> GetAsync(Expression<Func<House, bool>> filter = null, bool tracked = true)
         {
             {
                 IQueryable<House> query = _db.Houses;
@@ -39,7 +39,7 @@ namespace MagicHouse_HouseAPI.Repository
             }
         }
 
-        public async Task<List<House>> GetAll(Expression<Func<House, bool>> filter = null)
+        public async Task<List<House>> GetAllAsync(Expression<Func<House, bool>> filter = null)
         {
             IQueryable<House> query = _db.Houses;
             if(filter != null)
@@ -49,15 +49,21 @@ namespace MagicHouse_HouseAPI.Repository
             return await query.ToListAsync();
         }
 
-        public async Task Remove(House entity)
+        public async Task RemoveAsync(House entity)
         {
              _db.Houses.Remove(entity);
-            await Save();
+            await SaveAsync();
         }
 
-        public async Task Save()
+        public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(House entity)
+        {
+            _db.Houses.Update(entity);
+            await SaveAsync();
         }
     }
 }

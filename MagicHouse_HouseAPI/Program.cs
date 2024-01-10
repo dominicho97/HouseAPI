@@ -4,6 +4,8 @@
 
 using MagicHouse_HouseAPI;
 using MagicHouse_HouseAPI.Data;
+using MagicHouse_HouseAPI.Repository;
+using MagicHouse_HouseAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
 
+builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddControllers(options =>
 {

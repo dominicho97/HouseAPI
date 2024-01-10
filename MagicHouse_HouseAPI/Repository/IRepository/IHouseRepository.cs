@@ -5,11 +5,13 @@ namespace MagicHouse_HouseAPI.Repository.IRepository
 {
     public interface IHouseRepository
     {
-        Task<List<House>> GetAll(Expression<Func<House, bool>> filter = null);
-        Task<House>Get(Expression<Func<House, bool>> filter = null, bool tracked=true);
-        Task Create(House entity);
-        Task Remove(House entity);
+        Task<List<House>> GetAllAsync(Expression<Func<House, bool>> filter = null);
+        Task<House> GetAsync(Expression<Func<House, bool>> filter = null, bool tracked=true);
+        Task CreateAsync(House entity);
 
-        Task Save();
+        Task UpdateAsync(House entity);
+        Task RemoveAsync(House entity);
+
+        Task SaveAsync();
     }
 }
